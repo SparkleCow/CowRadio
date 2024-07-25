@@ -7,6 +7,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+
 @Entity
 @Data
 @SuperBuilder
@@ -24,5 +26,7 @@ public class Song extends BaseEntity{
     private String soundCloudUrl;
     @Column(columnDefinition = "TEXT")
     private String embedCode;
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "songs")
+    private List<Playlist> playlist;
 }
 

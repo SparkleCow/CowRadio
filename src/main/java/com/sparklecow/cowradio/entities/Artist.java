@@ -1,5 +1,6 @@
 package com.sparklecow.cowradio.entities;
 
+import com.sparklecow.cowradio.entities.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -21,6 +22,7 @@ public class Artist extends BaseEntity{
     private String description;
     @Column(name = "artist_image")
     private String artistImage;
+    @Enumerated(EnumType.STRING)
     private Country country;
     @CollectionTable(name = "artist_genres", joinColumns = @JoinColumn(name = "artist_id"))
     @ElementCollection(targetClass = Genre.class, fetch = FetchType.LAZY)
@@ -32,5 +34,7 @@ public class Artist extends BaseEntity{
     private Map<String, String> socialMediaLinks;
     @OneToMany(mappedBy = "artist", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Album> albums;
-    private Integer followers;
+    private Integer followersCount;
+    @ManyToMany(mappedBy = "followedArtist", fetch = FetchType.LAZY)
+    private List<User> followers;
 }

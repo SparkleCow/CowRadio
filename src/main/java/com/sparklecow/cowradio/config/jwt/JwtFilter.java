@@ -6,7 +6,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -16,6 +20,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
     private final JwtUtils jwtUtils;
+    private final UserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
@@ -27,9 +32,19 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
         final String token = authHeader.substring(7);
-        if(!jwtUtils.isTokenValid(token) || SecurityContextHolder.getContext().getAuthentication() != null){
+        final String username = jwtUtils.extractUsername(token);
+        if (username == null || SecurityContextHolder.getContext().getAuthentication() != null) {
             filterChain.doFilter(request, response);
             return;
         }
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        if (!jwtUtils.isTokenValid(token, userDetails)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        SecurityContextHolder.getContext().setAuthentication(authToken);
+        filterChain.doFilter(request, response);
     }
 }

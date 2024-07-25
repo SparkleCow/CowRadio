@@ -23,11 +23,11 @@ public class JwtUtils {
     private long expiration;
 
     //Create a token with the user's details and an optional map of claims
-    private String createToken(UserDetails user){
+    public String createToken(UserDetails user){
         return this.createToken(user, Map.of());
     }
 
-    private String createToken(UserDetails user, Map<String, Object> claims){
+    public String createToken(UserDetails user, Map<String, Object> claims){
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(user.getUsername())
@@ -68,7 +68,7 @@ public class JwtUtils {
     }
 
     //Key for signing the token
-    public Key signKey(){
+    private Key signKey(){
         byte[] bytes = Decoders.BASE64.decode(this.secret);
         return Keys.hmacShaKeyFor(bytes);
     }

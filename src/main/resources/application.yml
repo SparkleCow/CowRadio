@@ -8,6 +8,8 @@ spring:
       jwt:
         secret: 50a9c2491945272656e05eccdd90cd7242b16e24e16c3b6bbb158b77c1fc0c9b
         expiration: 86400000
+    mailing:
+      activation-url: http://localhost:4200/activate-account
 
   datasource:
     url: jdbc:mysql://localhost:3306/cowradio
@@ -23,4 +25,18 @@ spring:
       hibernate:
         format_sql: true
 
+  mail:
+    host: localhost
+    port: 1025
+    username: sparklecow
+    password: sparklecow
+    properties:
+      smtp:
+        trust: "*"
+      auth: true
+      starttls:
+        enable: true
+      connectiontimeout: 5000
+      timeout: 3000
+      writetimeput: 5000
 

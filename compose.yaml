@@ -9,3 +9,24 @@ services:
       MYSQL_USER: sparklecow
     ports:
       - 3306:3306
+    networks:
+      - cowradio-network
+    volumes:
+      - cowdata:/var/lib/mysql
+
+  mail-dev:
+    container_name: mail-dev
+    image: maildev/maildev
+    ports:
+      - 1025:1025
+      - 1080:1080
+    networks:
+      - cowradio-network
+
+networks:
+  cowradio-network:
+    driver: bridge
+
+volumes:
+  cowdata:
+    driver: local

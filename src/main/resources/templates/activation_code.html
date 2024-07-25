@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Activation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #d1d1d1;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 10px auto;
+            margin-bottom: 10px;
+            padding: 20px 30px 20px 30px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .container > h1{
+            text-align: center;
+            color: #007bff;
+        }
+
+        .greeting{
+            text-align: center;
+            padding: 20px 0px 20px 0px ;
+        }
+
+        .activation-code {
+            font-size: 36px;
+            text-align: center;
+            margin: 20px 0px 40px 0px;
+        }
+
+        .activation-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .activation-link a {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        .activation-link a:hover{
+            background-color: #3593f8;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <img src="https://img.freepik.com/fotos-premium/vaca-linda-escuchando-musica-auriculares-usando-ropa-urbana-moda_145713-16848.jpg"
+         alt="Cow listening music" height="400px" width="auto">
+    <h1>¡Activate your account!</h1>
+    <p class="greeting" th:text="'Hello ' + ${username}"></p>
+    <p class="greeting">CowRadio is waiting for you</p>
+    <p class="greeting">Thank you for join us. Please use the following activation code to activate your account:</p>
+    <div class="activation-code"><strong><span th:text="${activation_code}"></span></strong></div>
+    <div class="activation-link">
+        <a th:href="${confirmationUrl}" target="_blank">Activate your account</a>
+    </div>
+</div>
+</body>
+
+</html>

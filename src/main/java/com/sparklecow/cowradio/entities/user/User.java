@@ -1,12 +1,16 @@
 package com.sparklecow.cowradio.entities.user;
 
+import com.sparklecow.cowradio.entities.Artist;
+import com.sparklecow.cowradio.entities.Playlist;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -14,6 +18,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
 import java.security.Principal;
 import java.util.Collection;
 
@@ -21,6 +26,7 @@ import java.util.Collection;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Table(name = "users")
 @EntityListeners(AuditingEntityListener.class)
 public class User implements UserDetails, Principal {
@@ -30,7 +36,9 @@ public class User implements UserDetails, Principal {
     private Integer id;
     private String firstName;
     private String lastName;
+    @Column(unique = true)
     private String email;
+    @Column(unique = true)
     private String username;
     private String password;
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
@@ -38,7 +46,17 @@ public class User implements UserDetails, Principal {
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     private Set<Role> roles;
     private LocalDate dateOfBirth;
-    private boolean isEnable = false;
+    private boolean enabled = false;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Playlist> playlists;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_followed_artist",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "artist_id"))
+    private List<Artist> followedArtist;
+    //Code for enable account
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private Set<ActivationCode> code;
     //Auditing fields
     @CreatedDate
     @Column(nullable = false, updatable = false)
@@ -79,7 +97,7 @@ public class User implements UserDetails, Principal {
 
     @Override
     public boolean isEnabled() {
-        return this.isEnable;
+        return this.enabled;
     }
 
     @Override
