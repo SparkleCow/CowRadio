@@ -4,6 +4,10 @@ server:
 spring:
   application:
     name: cowradio
+    security:
+      jwt:
+        secret: 50a9c2491945272656e05eccdd90cd7242b16e24e16c3b6bbb158b77c1fc0c9b
+        expiration: 86400000
 
   datasource:
     url: jdbc:mysql://localhost:3306/cowradio
@@ -18,4 +22,5 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
 
