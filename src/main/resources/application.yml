@@ -1,5 +1,10 @@
 server:
   port: 8080
+  servlet:
+    context-path: /api/v1
+
+springdoc:
+  default-produces-media-type: application/json
 
 spring:
   application:
@@ -39,4 +44,6 @@ spring:
       connectiontimeout: 5000
       timeout: 3000
       writetimeput: 5000
+
+
 

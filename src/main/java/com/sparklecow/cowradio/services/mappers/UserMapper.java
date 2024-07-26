@@ -13,7 +13,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class UserMapper {
     private final PasswordEncoder passwordEncoder;
-    public User toUser(AuthRequest user) {
+    public User toUser(AuthRequest user, Role role) {
         return User.builder()
                 .firstName(user.firstName())
                 .lastName(user.lastName())
@@ -21,7 +21,7 @@ public class UserMapper {
                 .email(user.email())
                 .password(passwordEncoder.encode(user.password()))
                 .dateOfBirth(user.dateOfBirth())
-                .roles(Set.of(Role.USER))
+                .roles(Set.of(role))
                 .build();
     }
 }

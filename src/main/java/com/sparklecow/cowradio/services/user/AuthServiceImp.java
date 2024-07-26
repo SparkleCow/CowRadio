@@ -1,6 +1,7 @@
-package com.sparklecow.cowradio.services;
+package com.sparklecow.cowradio.services.user;
 
 import com.sparklecow.cowradio.config.jwt.JwtUtils;
+import com.sparklecow.cowradio.entities.user.Role;
 import com.sparklecow.cowradio.models.dtos.user.AuthLogin;
 import com.sparklecow.cowradio.models.dtos.user.AuthRequest;
 import com.sparklecow.cowradio.entities.user.ActivationCode;
@@ -16,20 +17,24 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class AuthServiceImp implements AuthService{
+public class AuthServiceImp implements AuthService {
 
     private final Logger logger = LoggerFactory.getLogger(AuthServiceImp.class);
     private final UserRepository userRepository;
@@ -41,12 +46,22 @@ public class AuthServiceImp implements AuthService{
     @Value("${spring.application.mailing.activation-url}")
     private String activationUrl;
 
-
+    /*Auxiliary method.
+    * It contains logic that some endpoints required in a repetitive way*/
     @Transactional
-    @Override
-    public Integer register(AuthRequest request) throws MessagingException {
-        //Create a User with the request information
-        User user = userRepository.save(userMapper.toUser(request));
+    public ResponseEntity<HttpStatus> registerUserWithRole(AuthRequest request, Role role) throws MessagingException {
+        Integer userId = register(request, role);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/users/{id}")
+                .buildAndExpand(userId)
+                .toUri();
+        return ResponseEntity.created(uri).build();
+    }
+
+    /*It creates a User with the request information and saves it. On the other hand, it will create and send
+    * a validation code to activate the account*/
+    public Integer register(AuthRequest request, Role role) throws MessagingException {
+        User user = userRepository.save(userMapper.toUser(request, role));
         sendVerificationCode(user);
         return user.getId();
     }

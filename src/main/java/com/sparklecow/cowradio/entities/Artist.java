@@ -1,5 +1,6 @@
 package com.sparklecow.cowradio.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sparklecow.cowradio.entities.user.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -16,6 +17,7 @@ import java.util.Map;
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "artists")
 public class Artist extends BaseEntity{
+
     @Column(name = "artist_name", nullable = false, unique = true)
     private String artistName;
     @Column(length = 500)
@@ -33,8 +35,10 @@ public class Artist extends BaseEntity{
     @MapKeyColumn(name = "social_media")
     private Map<String, String> socialMediaLinks;
     @OneToMany(mappedBy = "artist", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JsonIgnore
     private List<Album> albums;
     private Integer followersCount;
     @ManyToMany(mappedBy = "followedArtist", fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<User> followers;
 }
