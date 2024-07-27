@@ -11,7 +11,7 @@ import org.springframework.security.core.Authentication;
 
 public interface ArtistService {
     /*General use. All users will be able to use these methods*/
-    public Page<ArtistListResponse> findArtistByNameContaining(String name, int page, int size);
+    public Page<ArtistListResponse> findArtistByNameContaining(String artistName, int page, int size);
     public Page<ArtistListResponse> findArtistByCountry(Country country, int page, int size);
     public Page<ArtistListResponse> findArtistByGenre(Genre genre, int page, int size);
     public ArtistResponse findArtistById(Integer id);

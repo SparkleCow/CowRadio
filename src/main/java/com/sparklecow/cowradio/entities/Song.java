@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
@@ -16,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "songs")
-public class Song extends BaseEntity{
+public class Song extends BaseEntity implements Serializable {
     @Column(nullable = false)
     private String title;
     @ManyToOne(fetch = FetchType.LAZY)

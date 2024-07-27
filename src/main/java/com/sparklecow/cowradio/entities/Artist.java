@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -16,7 +17,7 @@ import java.util.Map;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "artists")
-public class Artist extends BaseEntity{
+public class Artist extends BaseEntity implements Serializable {
 
     @Column(name = "artist_name", nullable = false, unique = true)
     private String artistName;

@@ -10,6 +10,9 @@ import com.sparklecow.cowradio.repositories.ArtistRepository;
 import com.sparklecow.cowradio.services.mappers.ArtistMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -21,8 +24,10 @@ public class ArtistServiceImp implements ArtistService{
     private final ArtistMapper artistMapper;
 
     @Override
-    public Page<ArtistListResponse> findArtistByNameContaining(String name, int page, int size) {
-        return null;
+    public Page<ArtistListResponse> findArtistByNameContaining(String artistName, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("artistName").ascending());
+        Page<Artist> artists = artistRepository.findByArtistNameContainingIgnoreCase(artistName, pageable);
+        return artists.map(artistMapper::toArtistListResponse);
     }
 
     @Override

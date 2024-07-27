@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
@@ -17,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "playlists")
-public class Playlist extends BaseEntity{
+public class Playlist extends BaseEntity implements Serializable {
     @ManyToOne(fetch= FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
