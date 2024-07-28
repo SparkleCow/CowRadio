@@ -56,7 +56,7 @@ public class JwtUtils {
                 .parserBuilder()
                 .setSigningKey(this.signKey())
                 .build().
-                parseClaimsJwt(token).getBody();
+                parseClaimsJws(token).getBody();
     }
 
     public String extractUsername(String token){

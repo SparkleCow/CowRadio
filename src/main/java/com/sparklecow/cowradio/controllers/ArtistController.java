@@ -1,11 +1,13 @@
 package com.sparklecow.cowradio.controllers;
 
 import com.sparklecow.cowradio.models.dtos.artist.ArtistListResponse;
+import com.sparklecow.cowradio.models.dtos.artist.ArtistRequest;
 import com.sparklecow.cowradio.services.artist.ArtistService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,5 +24,11 @@ public class ArtistController {
                                                                   @RequestParam(name = "page", defaultValue = "0") int page,
                                                                   @RequestParam(name = "size", defaultValue = "20") int size){
         return ResponseEntity.ok(artistService.findArtistByNameContaining(artistName, page, size));
+    }
+
+    @PostMapping()
+    public ResponseEntity<Integer> createArtist(@RequestBody ArtistRequest artistRequest, Authentication authentication){
+        System.out.println(artistRequest);
+        return ResponseEntity.ok(artistService.createArtist(artistRequest, authentication));
     }
 }

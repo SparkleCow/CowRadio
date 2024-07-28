@@ -16,6 +16,13 @@ spring:
     mailing:
       activation-url: http://localhost:4200/activate-account
 
+  cache:
+    type: redis
+
+  redis:
+    host: localhost
+    port: 6379
+
   datasource:
     url: jdbc:mysql://localhost:3306/cowradio
     username: sparklecow
@@ -25,10 +32,11 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
 
   mail:
     host: localhost

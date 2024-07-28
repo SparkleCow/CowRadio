@@ -32,7 +32,7 @@ public class Artist extends BaseEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     private List<Genre> genres;
     @CollectionTable(name = "socialMedia", joinColumns = @JoinColumn(name = "artist_id"))
-    @ElementCollection(targetClass = Genre.class, fetch = FetchType.LAZY)
+    @ElementCollection(fetch = FetchType.LAZY)
     @MapKeyColumn(name = "social_media")
     private Map<String, String> socialMediaLinks;
     @OneToMany(mappedBy = "artist", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)

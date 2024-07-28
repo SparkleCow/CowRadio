@@ -20,7 +20,6 @@ public class ArtistMapper {
                 .followersCount(0)
                 .build();
     }
-
     public ArtistListResponse toArtistListResponse(Artist artist) {
         return ArtistListResponse.builder()
                 .id(artist.getId())

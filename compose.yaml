@@ -1,7 +1,7 @@
 services:
   mysql-radio:
     container_name: mysql-radio
-    image: 'mysql:latest'
+    image: mysql:latest
     environment:
       MYSQL_DATABASE: cowradio
       MYSQL_PASSWORD: 12345
@@ -20,6 +20,14 @@ services:
     ports:
       - 1025:1025
       - 1080:1080
+    networks:
+      - cowradio-network
+
+  redis:
+    container_name: redis-radio
+    image: redis:latest
+    ports:
+      - 6379:6379
     networks:
       - cowradio-network
 

@@ -46,7 +46,7 @@ public class User implements UserDetails, Principal {
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     private Set<Role> roles;
     private LocalDate dateOfBirth;
-    private boolean enabled = false;
+    private boolean enabled = true;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Playlist> playlists;
@@ -99,7 +99,7 @@ public class User implements UserDetails, Principal {
 
     @Override
     public boolean isEnabled() {
-        return this.enabled;
+        return enabled;
     }
 
     @Override
