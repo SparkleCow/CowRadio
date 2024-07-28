@@ -20,7 +20,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -29,44 +28,55 @@ public class ArtistServiceImp implements ArtistService{
     private final ArtistRepository artistRepository;
     private final ArtistMapper artistMapper;
 
-
-    @Cacheable("findArtist")
-    @Transactional
+    @Cacheable("findArtistByName")
     @Override
     public Page<ArtistListResponse> findArtistByNameContaining(String artistName, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("artistName").ascending());
         Page<Artist> artists = artistRepository.findByArtistNameContainingIgnoreCase(artistName, pageable);
+        //Load the genres list to avoid lazy load problem with hibernate and redis.
         artists.forEach(artist -> {
             Hibernate.initialize(artist.getGenres());
         });
         return artists.map(artistMapper::toArtistListResponse);
     }
 
+    @Cacheable("findArtistByCountry")
     @Override
     public Page<ArtistListResponse> findArtistByCountry(Country country, int page, int size) {
-        return null;
+        Pageable pageable = PageRequest.of(page, size, Sort.by("country").ascending());
+        Page<Artist> artists = artistRepository.findByCountry(country, pageable);
+        //Load the genres list to avoid lazy load problem with hibernate and redis.
+        artists.forEach(artist -> {
+            Hibernate.initialize(artist.getGenres());
+        });
+        return artists.map(artistMapper::toArtistListResponse);
     }
 
+    @Cacheable("findArtistByGenre")
     @Override
     public Page<ArtistListResponse> findArtistByGenre(Genre genre, int page, int size) {
-        return null;
+        Pageable pageable = PageRequest.of(page, size, Sort.by("genre").ascending());
+        Page<Artist> artists = artistRepository.findByGenresContaining(genre, pageable);
+        return artists.map(artistMapper::toArtistListResponse);
     }
 
+    @Cacheable("findArtist")
     @Override
     public ArtistResponse findArtistById(Integer id) {
-        return null;
+        Artist artist = artistRepository.findById(id).orElseThrow(() -> new RuntimeException(""));
+        return artistMapper.toArtistResponse(artist);
     }
 
-    @CacheEvict(value = "findArtist", allEntries = true)
+    @CacheEvict(value = {"findArtistByName", "findArtistByCountry", "findArtistByGenre"}, allEntries = true)
     @Override
     public Integer createArtist(ArtistRequest artistRequest, Authentication authentication) {
+
         User user = (User) authentication.getPrincipal();
         if (!user.getRoles().contains(Role.ARTIST)){
             //TODO Enhance exceptions
             throw new RuntimeException();
         }
         Artist artist = artistMapper.toArtist(artistRequest);
-        System.out.print(artist);
         return artistRepository.save(artist).getId();
     }
 
